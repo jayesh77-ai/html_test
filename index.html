@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkbox Alignment</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+
+    .form-control {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      max-width: 400px;
+    }
+
+    .form-control > label {
+      font-size: 16px;
+      font-weight: bold;
+      color: #0B2451;
+      display: block;
+      margin-bottom: 15px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;   
+      margin-bottom: 10px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      margin-right: 8px;     
+      transform: scale(1.2);
+      cursor: pointer;
+    }
+
+    .checkbox-group label {
+      font-weight: normal;
+      font-size: 14px;
+      color: #0B2451;
+      cursor: pointer;
+    }
+
+    #submit-btn {
+      background: #e53935;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #submit-btn:hover {
+      background: #c62828;
+    }
+
+    .submission-message {
+      display: none;
+      font-size: 14px;
+      color: green;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-control">
+    <label>What other information would you want to receive from the dealer?</label>
+
+    <div class="checkbox-group">
+      <input type="checkbox" id="option1" name="services" value="Sales Promotions">
+      <label for="option1">Sales Promotions</label>
+    </div>
+
+    <div class="checkbox-group">
+      <input type="checkbox" id="option2" name="services" value="Get a Quote">
+      <label for="option2">Get a Quote</label>
+    </div>
+
+    <div class="checkbox-group">
+      <input type="checkbox" id="option3" name="services" value="Financing Options">
+      <label for="option3">Financing Options</label>
+    </div>
+    
+    <div style="display: flex; justify-content: flex-end;">
+      <button type="button" id="submit-btn">Next</button>
+    </div>
+
+  </div>
+  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+  window.onload = function() {
+    document.querySelectorAll('input').forEach(function(input) {
+      input.setAttribute('autocomplete', 'off');
+    });
+  };
+
+  document.getElementById("submit-btn").addEventListener("click", function() {
+    var selectedOptions = {};
+
+    document.querySelectorAll('input[name="services"]:checked').forEach(function(checkbox) {
+      selectedOptions[checkbox.id] = checkbox.value;
+    });
+
+    $("#submit-btn").prop('disabled', true);
+  
+    window.parent.postMessage(JSON.stringify({
+      event_code: 'ym-client-event',
+      data: JSON.stringify({
+        event: {
+          code: "userdetails",
+          data: selectedOptions   
+        }
+      })
+    }));
+
+    $("#submit-btn").fadeOut("slow", function () {
+      $(".submission-message").fadeIn("slow");
+    });
+
+    // alert("Submitted: " + JSON.stringify(selectedOptions));
+  });
+</script>
+
+</body>
+</html>
